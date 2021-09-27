@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/http/httputil"
 )
@@ -90,18 +91,18 @@ func (c *Client) send(data []byte) (*Message, error) {
 
 	if resp.StatusCode != http.StatusOK {
 		requestBytes, _ := httputil.DumpRequest(req, true)
-		responseBytes, _ := httputil.DumpResponse(resp, true)
+		responseBytes, _ := ioutil.ReadAll(resp.Body)
 
 		if resp.StatusCode >= http.StatusInternalServerError {
 			return nil, HttpError{
 				RequestDump:  string(requestBytes),
-				ResponseDump: string(responseBytes),
+				ResponseBody: string(responseBytes),
 				Err:          fmt.Errorf(fmt.Sprintf("%d error: %s", resp.StatusCode, resp.Status)),
 			}
 		}
 		return nil, HttpError{
 			RequestDump:  string(requestBytes),
-			ResponseDump: string(responseBytes),
+			ResponseBody: string(responseBytes),
 			Err:          fmt.Errorf("%d error: %s", resp.StatusCode, resp.Status),
 		}
 	}
@@ -118,7 +119,7 @@ func (c *Client) send(data []byte) (*Message, error) {
 // HttpError contains the dump of the request and response for debugging purposes.
 type HttpError struct {
 	RequestDump  string
-	ResponseDump string
+	ResponseBody string
 	Err          error
 }
 
