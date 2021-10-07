@@ -54,7 +54,7 @@ type ApsDictionary struct {
 	// Include this key when you want the system to modify the badge of
 	// your app icon. If this key is not included in the dictionary,
 	// the badge is not changed. To remove the badge, set the value of this key to 0.
-	Badge int `json:"badge,omitempty"`
+	Badge int `json:"badge"`
 
 	// Include this key when you want the system to play a sound. The value of
 	// this key is the name of a sound file in your app’s main bundle or in the
